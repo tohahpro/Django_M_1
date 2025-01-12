@@ -1,0 +1,127 @@
+{% extends "dashboard/dashboard.html" %} 
+{% block title %}Manager Dashboard{% endblock title %}
+
+{% block tasks %}
+<section>
+  <div class="overflow-x-auto flex-1 bg-white rounded-lg">
+    <table class="min-w-full border-collapse overflow-hidden">
+      <h2 class="text-2xl font-bold text-black p-5">All Tasks</h2>
+      <thead>
+        <tr class="">
+          <th
+            class="px-4 py-2 text-md text-left text-gray-600 font-semibold uppercase"
+          >
+            Task Title
+          </th>
+          <th class="px-4 py-2 text-left text-gray-600 font-semibold uppercase">
+            Priority
+          </th>
+          <th class="px-4 py-2 text-left text-gray-600 font-semibold uppercase">
+            Team
+          </th>
+          <th class="px-4 py-2 text-left text-gray-600 font-semibold uppercase">
+            Created At
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-t">
+          <td class="px-4 py-2">
+            <div class="flex items-center gap-3 text-left">
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+              Test Task
+            </div>
+          </td>
+          <td class="px-4 py-2">
+            <span
+              class="px-2 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded"
+              >Low</span
+            >
+          </td>
+          <td class="px-4 py-2">
+            <div class="flex -space-x-3">
+              <span
+                class="p-1 text-sm font-medium bg-red-400 text-white rounded-full border-2 border-gray-300"
+                >AC</span
+              >
+              <span
+                class="p-1 text-sm font-medium bg-blue-400 text-white rounded-full border-2 border-gray-300"
+                >BA</span
+              >
+              <span
+                class="p-1 text-sm font-medium bg-yellow-400 text-white rounded-full border-2 border-gray-300"
+                >CE</span
+              >
+            </div>
+          </td>
+          <td class="px-4 py-2">9 months ago</td>
+        </tr>
+        {% comment %} <!-- row 2  --> {% endcomment %}
+        <tr class="border-t">
+          <td class="px-4 py-2">
+            <div class="flex items-center gap-3 text-left">
+              <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+              Low Task
+            </div>
+          </td>
+          <td class="px-4 py-2">
+            <span
+              class="px-2 py-1 text-sm font-medium bg-gray-200 text-gray-600 rounded"
+              >Normal</span
+            >
+          </td>
+          <td class="px-4 py-2">
+            <div class="flex -space-x-3">
+              <span
+                class="p-1 text-sm font-medium bg-[#ad97c9] text-white rounded-full border-2 border-gray-300"
+                >AC</span
+              >
+              <span
+                class="p-1 text-sm font-medium bg-yellow-400 text-white rounded-full border-2 border-gray-300"
+                >BA</span
+              >
+              <span
+                class="p-1 text-sm font-medium bg-orange-400 text-white rounded-full border-2 border-gray-300"
+                >CE</span
+              >
+            </div>
+          </td>
+          <td class="px-4 py-2">9 months ago</td>
+        </tr>
+        {% comment %} <!-- row 3  --> {% endcomment %}
+        <tr class="border-t">
+          <td class="px-4 py-2">
+            <div class="flex items-center gap-3 text-left">
+              <span class="w-2 h-2 rounded-full bg-red-500"></span>
+              Project proposal
+            </div>
+          </td>
+          <td class="px-4 py-2">
+            <span
+              class="px-2 py-1 text-sm font-medium bg-red-100 text-red-800 rounded"
+              >High</span
+            >
+          </td>
+          <td class="px-4 py-2">
+            <div class="flex -space-x-3">
+              <span
+                class="p-1 text-sm font-medium bg-green-400 text-white rounded-full border-2 border-gray-300"
+                >AC</span
+              >
+              <span
+                class="p-1 text-sm font-medium bg-red-400 text-white rounded-full border-2 border-gray-300"
+                >BA</span
+              >
+              <span
+                class="p-1 text-sm font-medium bg-blue-400 text-white rounded-full border-2 border-gray-300"
+                >CE</span
+              >
+            </div>
+          </td>
+          <td class="px-4 py-2">9 months ago</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock tasks %}
