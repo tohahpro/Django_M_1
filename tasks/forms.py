@@ -22,3 +22,16 @@ class TaskModelFrom(forms.ModelForm):
         model = Task
         fields = ['title', 'description','due_date','assigned_to']
         # exclude = ['project', 'is_completed', 'created_at', 'updated_at']
+
+        widgets = {
+            'title':forms.TextInput(attrs={
+                'class':"border border-gray-300 w-full rounded-lg shadow-sm focus:border-rose-500 focus:ring-rose-500", 'placeholder':"Enter Task title"
+            }),
+            'description': forms.Textarea(attrs={
+                'class':"border border-gray-300 w-full rounded-lg shadow-sm focus:border-rose-500 focus:ring-rose-500", 'placeholder':"Enter your description"
+            }),
+            'due_date': forms.SelectDateWidget(attrs={
+                'class':"border border-gray-300 shadow-sm focus:border-rose-500 focus:ring-rose-500"
+            }),
+            'assigned_to': forms.CheckboxSelectMultiple
+        }
