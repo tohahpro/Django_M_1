@@ -6,6 +6,11 @@
     <title>Document</title>
 </head>
 <body>
+    <div>
+        {% if message %}
+         <p>{{message}}</p> 
+        {% endif %}
+    </div>
     <form method="POST">
         {% csrf_token %}
         {{form.as_p}}

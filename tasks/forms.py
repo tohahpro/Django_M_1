@@ -1,4 +1,5 @@
 from django import forms
+from tasks.models import Task
 
 # Django Form 
 class TaskForm(forms.Form):
@@ -13,3 +14,11 @@ class TaskForm(forms.Form):
 
         super().__init__(*args, **kwargs)
         self.fields['assigned_to'].choices = [(emp.id, emp.name) for emp in employees]
+
+
+# Django Model Form 
+class TaskModelFrom(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'description','due_date','assigned_to']
+        # exclude = ['project', 'is_completed', 'created_at', 'updated_at']
