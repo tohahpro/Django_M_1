@@ -13,7 +13,7 @@ class Task(models.Model):
         on_delete=models.CASCADE, 
         default=1
     )
-    assigned_to = models.ManyToManyField(Employee)
+    assigned_to = models.ManyToManyField(Employee, related_name='tasks')
     # notun_string = models.CharField(max_length=100,default="")
     title = models.CharField(max_length=250)
     description = models.TextField()
