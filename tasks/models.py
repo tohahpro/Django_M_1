@@ -7,13 +7,16 @@ class Employee(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
 
+    def __str__(self):
+        return self.name
+
 class Task(models.Model):
     project= models.ForeignKey(
         "Projects",
         on_delete=models.CASCADE, 
         default=1
     )
-    assigned_to = models.ManyToManyField(Employee)
+    assigned_to = models.ManyToManyField(Employee, related_name='tasks')
     # notun_string = models.CharField(max_length=100,default="")
     title = models.CharField(max_length=250)
     description = models.TextField()
