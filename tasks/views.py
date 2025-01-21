@@ -54,3 +54,15 @@ def create_task(request):
     context = {"form": form}
     return render(request, "task_form.html", context)
 
+
+
+def view_task(request):
+    # Retrieving Data task model 
+    tasks = Task.objects.all()
+    # return render(request, 'view_task.html',{"tasks": tasks})
+
+    # Retrieving a specific task
+    task_3 = Task.objects.get(id=1)
+    
+    return render(request, 'view_task.html',{"tasks": tasks, 'task_3': task_3})
+    
