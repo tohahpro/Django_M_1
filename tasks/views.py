@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from tasks.forms import TaskForm, TaskModelFrom
-from tasks.models import Employee, Task, TaskDetails
+from tasks.models import Employee, Task, TaskDetails, Projects
+from django.db.models import Q
 from datetime import date
 
 # Create your views here.
@@ -66,15 +67,28 @@ def view_task(request):
     # task_3 = Task.objects.get(id=1)    
     # return render(request, 'view_task.html',{"tasks": tasks, 'task_3': task_3})
 
-    taskFilter = Task.objects.filter(status="PENDING")
-    due_date_Filter = Task.objects.filter(due_date=date.today())
+    # taskFilter = Task.objects.filter(status="PENDING")
+    # due_date_Filter = Task.objects.filter(due_date=date.today())
 
-    """Show the task whos priority is not low"""
-    priority_task = TaskDetails.objects.exclude(priority="L")
+    # """Show the task whos priority is not low"""
+    # priority_task = TaskDetails.objects.exclude(priority="L")
 
-    return render(request, 'view_task.html',{"taskFilter": taskFilter, "due_date_Filter":due_date_Filter,"Task_priority":priority_task })
+    # return render(request, 'view_task.html',{"taskFilter": taskFilter, "due_date_Filter":due_date_Filter,"Task_priority":priority_task })
 
+    look_up = Task.objects.filter(title__icontains='b')
+
+    task_1 = Task.objects.filter(Q(status='PENDING') | Q(status='IN_PROGRESS'))
+
+    tasks = Task.objects.select_related('details').all()
+
+    """Prefetch Related (Reverse Foreignkey, manyToMany)"""
+    task_4 = Projects.objects.prefetch_related('task_set').all()
+
+    """Prefetch Related (manyToMany)"""
+    task_5 = Task.objects.prefetch_related("assigned_to").all()
     
+    return render(request, 'view_task.html', {"tasks": tasks,"tasks1": task_1, "task4":task_4,"task5":task_5,"look_up": look_up})
     
+   
 
     
