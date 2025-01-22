@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from tasks.forms import TaskForm, TaskModelFrom
 from tasks.models import Employee, Task, TaskDetails, Projects
-from django.db.models import Q
+from django.db.models import Q, Count, Max, Min, Avg
 from datetime import date
 
 # Create your views here.
@@ -87,7 +87,13 @@ def view_task(request):
     """Prefetch Related (manyToMany)"""
     task_5 = Task.objects.prefetch_related("assigned_to").all()
     
-    return render(request, 'view_task.html', {"tasks": tasks,"tasks1": task_1, "task4":task_4,"task5":task_5,"look_up": look_up})
+    # return render(request, 'view_task.html', {"tasks": tasks,"tasks1": task_1, "task4":task_4,"task5":task_5,"look_up": look_up})
+
+    # Aggregations [Advanced]
+    # task_count = Task.objects.aggregate(num_task=Count('id'))
+    projects = Projects.objects.annotate(num_task=Count('task')).order_by('num_task')
+
+    return render(request, 'view_task.html', {"projects":projects})
     
    
 
