@@ -9,8 +9,8 @@
   </head>
 
   <body>
-    <div>
-      <ul>
+   <div>
+      {% comment %} <ul>
             {% for task in tasks %}
                <li>
                  {{task.status}}
@@ -22,6 +22,25 @@
         <ul>
               {{task_3}}
         </ul>
-      </div>
+      </div> {% endcomment %}
+    <div>
+        {% for tasks in taskFilter %}
+           <li>
+              Status - {{tasks.status}}
+           </li>        
+        {% endfor %}        
+    </div>
+    <div>
+        {% for Tasks in Task_priority %}
+           
+              <p>{{Tasks.task}}</p>
+              <p>{{Tasks.priority}}</p>
+                  
+        {% endfor %}        
+    </div>
+
+    <div>
+        {{due_date_Filter}}       
+    </div>
   </body>
 </html>
