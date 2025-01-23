@@ -7,9 +7,10 @@ from datetime import date
 
 # Create your views here.
 
-def manager_dashboard(request):
-    tasks = Task.objects.select_related('details').prefetch_related('assigned_to').all()    
+def manager_dashboard(request):   
 
+    type = request.GET.get('type','all')
+   
     # Optimizing Database Query.
     counts = Task.objects.aggregate(
         total=Count('id'),
@@ -17,6 +18,20 @@ def manager_dashboard(request):
         in_progress = Count('id', filter=Q(status = 'IN_PROGRESS')),
         pending = Count('id', filter=Q(status = 'PENDING')),
     )
+
+    # Retriving task data
+    base_query = Task.objects.select_related('details').prefetch_related('assigned_to')
+    
+
+    if type == 'completed':
+        tasks = base_query.filter(status = 'COMPLETED')
+    elif type == 'in_progress':
+        tasks = base_query.filter(status = 'IN_PROGRESS')
+    elif type == 'pending':
+        tasks = base_query.filter(status = 'PENDING')
+    elif type == 'all':
+        tasks = base_query.all()
+
 
     context = {
         "tasks" : tasks,
