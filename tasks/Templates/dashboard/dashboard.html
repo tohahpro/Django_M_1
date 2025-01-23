@@ -124,6 +124,13 @@
             
 
         </section>
+        <div>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="px-2 py-1 {% if message.tag == 'success' %}text-green-500{% endif %}">{{message}}</p>
+                {% endfor %} 
+            {% endif %}
+        </div>
         {% block tasks %}{% endblock tasks %}
     </div>
 
