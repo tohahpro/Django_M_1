@@ -9,19 +9,88 @@
   </head>
 
   <body>
-    <div>
-      <ul>
-            {% for task in tasks %}
-               <li>
-                 {{task.status}}
-               </li>
-            {% endfor %}
-      </ul>
-    </div>
-    <div>
+    {% comment %} <div>
+      <div>
         <ul>
-              {{task_3}}
+              {% for task in tasks %}
+                 <li>
+                   {{task.status}}
+                 </li>
+              {% endfor %}
         </ul>
       </div>
+  
+      <div>
+          <ul>
+                {{task_3}}
+          </ul>
+      </div> 
+  
+      <div>
+          {% for tasks in taskFilter %}
+             <li>
+                Status - {{tasks.status}}
+             </li>        
+          {% endfor %}        
+      </div>
+  
+      <div>
+          {% for Tasks in Task_priority %}
+             
+                <p>{{Tasks.task}}</p>
+                <p>{{Tasks.priority}}</p>
+                    
+          {% endfor %}        
+      </div>
+  
+      <div>
+          {{due_date_Filter}}       
+      </div>
+  
+      <div>          
+          {% for task in look_up %}
+            <li>title---{{task.title}}</li> 
+            <li>{{task.status}}</li> 
+          {% endfor %}   
+      </div> 
+      
+      <div>          
+          {% for task in tasks %}
+            <p>{{task.title}}</p>          
+            <p>{{task.details.priority}}</p>          
+          {% endfor %}   
+      </div> 
+  
+      <div>          
+          {% for project in task4 %}
+            <p>{{project.name}}</p>          
+            {% for task in project.task_set.all %}
+              <p>{{task.title}}</p> 
+            {% endfor %}         
+          {% endfor %}   
+      </div> 
+  
+      <div>          
+          {% for task in task5 %}
+            <p>{{task.title}}</p>          
+            {% for emp in task.assigned_to.all %}
+              <p>{{emp.name}}</p> 
+            {% endfor %}         
+          {% endfor %}   
+      </div> 
+  
+    </div> {% endcomment %}
+
+    {% comment %} ----Aggregations [Advanced]--- {% endcomment %}
+      
+    <div>
+      <p>{{task_count.num_task}}</p>
+      
+      {% for project in projects %}
+        <p>{{project.name}}</p>
+        <p>{{project.num_task}}</p>
+      {% endfor %}
+
+    </div>
   </body>
 </html>
