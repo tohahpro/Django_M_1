@@ -1,62 +1,115 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from tasks.forms import TaskForm, TaskModelFrom
+from tasks.forms import TaskForm, TaskModelFrom, TaskDetailsModelForm
 from tasks.models import Employee, Task, TaskDetails, Projects
 from django.db.models import Q, Count, Max, Min, Avg
 from datetime import date
+from django.contrib import messages
 
 # Create your views here.
 
+def manager_dashboard(request):   
 
-def manager_dashboard(request):
-    return render(request, "dashboard/manager_dashboard.html")
+    type = request.GET.get('type','all')
+   
+    # Optimizing Database Query.
+    counts = Task.objects.aggregate(
+        total=Count('id'),
+        completed = Count('id', filter=Q(status = 'COMPLETED')),
+        in_progress = Count('id', filter=Q(status = 'IN_PROGRESS')),
+        pending = Count('id', filter=Q(status = 'PENDING')),
+    )
+
+    # Retrieving task data
+    base_query = Task.objects.select_related('details').prefetch_related('assigned_to')    
+
+    if type == 'completed':
+        tasks = base_query.filter(status = 'COMPLETED')
+    elif type == 'in_progress':
+        tasks = base_query.filter(status = 'IN_PROGRESS')
+    elif type == 'pending':
+        tasks = base_query.filter(status = 'PENDING')
+    elif type == 'all':
+        tasks = base_query.all()
+
+
+    context = {
+        "tasks" : tasks,
+        "counts" : counts    
+    }
+    return render(request, "dashboard/manager_dashboard.html",context)
 
 def user_dashboard(request):
     return render(request, "dashboard/user_dashboard.html")
 
+
+def create_task(request):
+    # employees = Employee.objects.all()
+    task_form = TaskModelFrom() # For GET
+    task_detail_form = TaskDetailsModelForm()
+
+    if request.method == "POST":        
+        task_form = TaskModelFrom(request.POST)
+        task_detail_form = TaskDetailsModelForm(request.POST)
+        if task_form.is_valid() and task_detail_form.is_valid():
+
+            """For Model From Data"""            
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task = task
+            task_detail.save()
+
+            messages.success(request,"Task Created Successfully!")
+            return redirect('create-task')
+
+    context = {"task_form": task_form, "task_detail_form":task_detail_form}
+    return render(request, "task_form.html", context)
+
+def update_task(request,id):
+    task = Task.objects.get(id=id)    
+    task_form = TaskModelFrom(instance=task) # For GET
+    task_detail_form = TaskDetailsModelForm()
+
+    if task.details:
+        task_detail_form = TaskDetailsModelForm(instance=task.details)
+
+    if request.method == "POST":        
+        task_form = TaskModelFrom(request.POST, instance=task)
+        task_detail_form = TaskDetailsModelForm(request.POST,instance=task.details)
+        if task_form.is_valid() and task_detail_form.is_valid():
+
+            """For Model From Data"""            
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task = task
+            task_detail.save()
+
+            messages.success(request,"Task Updated Successfully!")
+            return redirect('manager-dashboard')
+
+    context = {"task_form": task_form, "task_detail_form":task_detail_form}
+    return render(request, "task_form.html", context)
+
+
+def delete_task(request,id):
+    if request.method == 'POST':
+        task = Task.objects.get(id=id)
+        task.delete()
+        messages.success(request, 'Task Deleted Successfully')
+        return redirect('manager-dashboard')
+    else:
+        messages.error(request, 'Something went wrong')
+    return redirect('manager-dashboard')
+
+
+
+
+# for testing purpose
 def test(request):
     context = {
         "names" : ["toha", "Ahamd","john"]
     }
     return render(request, "Test.html",context)
-
-def create_task(request):
-    # employees = Employee.objects.all()
-    form = TaskModelFrom()
-
-
-    if request.method == "POST":
-        form = TaskModelFrom(request.POST)
-        if form.is_valid():
-            """For Model From Data"""
-            print(form)
-            form.save()
-
-            return render(request,'task_form.html',{"form": form, "message": "Task added successfully"})
-
-
-            """For Django From Data"""
-
-            # data = form.cleaned_data
-            # title = data.get('title')
-            # description = data.get('description')
-            # due_date = data.get('due_date')
-            # assigned_to = data.get('assigned_to')
-
-            # # django shell e jamon kaj ta kortam 
-            # task = Task.objects.create(
-            #     title=title, description=description, due_date=due_date)
-            
-            # # Assign employee to tasks
-            # for emp_id in assigned_to:
-            #     employee = Employee.objects.get(id=emp_id)
-            #     task.assigned_to.add(employee)
-
-
-    context = {"form": form}
-    return render(request, "task_form.html", context)
-
-
 
 def view_task(request):
     # Retrieving Data task model 
