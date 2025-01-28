@@ -7,24 +7,28 @@
     <title>Document</title>
     <link rel="stylesheet" href="{% static "css/output.css" %}">
 </head>
-    <body>
-        <div class="max-w-[1400px] mx-auto py-20">
-                <div>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <p class="px-2 py-1 {% if message.tag == 'success' %}text-green-500{% endif %}">{{message}}</p>
-                        {% endfor %} 
-                    {% endif %}
+    <body class='bg-[#FAFAFC]'>
+        
+                <div class='w-2/3 font-Inter bg-[#eeeef1f3] mx-auto shadow-xl rounded-xl my-10'>
+                    <div class='px-10 py-8'>
+                        <div>
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <p class="px-2 py-1 font-semibold {% if message.tag == 'success' %}text-green-500{% endif %}">{{message}}</p>
+                                {% endfor %} 
+                            {% endif %}
+                        </div>
+                        <div >
+                            <form method="POST" class="space-y-2">
+                                {% csrf_token %}
+                                {{task_form.as_p}}
+                                {{task_detail_form.as_p}}
+                                <button type="submit" class="bg-red-500 w-full px-4 py-2 rounded-lg text-white font-semibold">Submit</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="space-y-2">
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{task_form.as_p}}
-                        {{task_detail_form.as_p}}
-                        <button type="submit" class="bg-red-500 px-4 py-2 rounded-lg text-white font-semibold">Submit</button>
-                    </form>
-                </div>
-        </div>
+       
         
     </body>
 </html>
