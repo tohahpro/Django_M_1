@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # many to many 
 class Employee(models.Model):
@@ -58,3 +59,12 @@ class Projects(models.Model):
     def __str__(self):
         return self.name
 
+# Signals
+@receiver(post_save, sender=Task) # <- decorator
+def notify_task_creation(sender, instance, created, **kwargs):
+    if created:
+        print('sender', sender)
+        print('instance', instance)
+        print(kwargs)
+        instance.is_completed = True
+        instance.save()
