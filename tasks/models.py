@@ -1,6 +1,7 @@
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed, post_delete
 from django.dispatch import receiver
+from django.core.mail import send_mail
 
 # many to many 
 class Employee(models.Model):
@@ -60,11 +61,20 @@ class Projects(models.Model):
         return self.name
 
 # Signals
-@receiver(post_save, sender=Task) # <- decorator
-def notify_task_creation(sender, instance, created, **kwargs):
-    if created:
-        print('sender', sender)
-        print('instance', instance)
-        print(kwargs)
-        instance.is_completed = True
-        instance.save()
+@receiver(m2m_changed, sender=Task.assigned_to.through) # <- decorator
+def notify_employee_on_task_creation(sender, instance, action, **kwargs):
+    if action == 'post_add':
+        assigned_email = [emp.email for emp in instance.assigned_to.all()]
+
+        send_mail(
+            "New Task Assigned",
+            f"You have been assigned to the task:{instance.title}",
+            "tohahpro@gmail.com",
+            assigned_email,
+        )
+
+# @receiver(post_delete, sender= Task)
+# def delete_associate_details(sender, instance, **kwargs):
+#     if instance.details:
+#         print(isinstance)
+#         instance.details.delete()
