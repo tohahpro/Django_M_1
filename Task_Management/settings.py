@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import Config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y5$7+x343$=()$7x)u2uvezd)(bz56_kv5c%q^=63+7j@fe4*c'
+SECRET_KEY = Config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -97,11 +98,11 @@ WSGI_APPLICATION = 'Task_Management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'task_management',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': Config('DB_NAME'),
+        'USER': Config('DB_USER'),
+        'PASSWORD': Config('DB_PASSWORD'),
+        'HOST': Config('DB_HOST', default='localhost'),
+        'PORT': Config('DB_PORT', cast=int)
     }
 }
 
@@ -151,10 +152,10 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = "tohahpro@gmail.com"
-EMAIL_HOST_PASSWORD = "qbzn pcjs nvtb bnww"
+EMAIL_HOST = Config('EMAIL_HOST')
+EMAIL_USE_TLS = Config('EMAIL_USE_TLS', cast=bool)
+EMAIL_PORT = Config('EMAIL_PORT')
+EMAIL_HOST_USER = Config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = Config('EMAIL_HOST_PASSWORD')
 
 
