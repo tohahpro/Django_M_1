@@ -16,8 +16,7 @@
         {% endif %}
         <form action="" method="POST">
             {% csrf_token %}
-            <input type="text" class="" name="username">
-            <input type="password" class="" name="password">
+            {{form.as_div}}
             <button type="submit">Submit</button>
         </form>
     </div>

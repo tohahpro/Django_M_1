@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django import forms
 import re
 from tasks.forms import StyleForMixin
+from django.contrib.auth.forms import AuthenticationForm
 
 class RegisterFrom(UserCreationForm):
     class Meta:
@@ -65,3 +66,11 @@ class CustomRegistrationForm(StyleForMixin,forms.ModelForm):
             raise forms.ValidationError("Password do not match")
         
         return cleaned_data
+
+class LoginForm(StyleForMixin, AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_styled_widgets()
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
