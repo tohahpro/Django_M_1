@@ -28,8 +28,7 @@ class CustomRegistrationForm(StyleForMixin,forms.ModelForm):
     
     # Field error 
     def clean_password(self):
-        password = self.cleaned_data.get('password')
-        confirm_password = self.cleaned_data.get('confirm_password')
+        password = self.cleaned_data.get('password')        
         errors=[]
 
         if len(password) < 8:
@@ -41,9 +40,7 @@ class CustomRegistrationForm(StyleForMixin,forms.ModelForm):
         if not re.search(r'[@#$%^&+=]',password):
             errors.append('Password must include at least one special character.')
         if not re.search(r'[0-9]',password):
-            errors.append('Password must include at least one number.')
-        if password != confirm_password:
-            errors.append('Password do not match')
+            errors.append('Password must include at least one number.')        
         if errors:
             raise forms.ValidationError(errors)
         
@@ -59,12 +56,12 @@ class CustomRegistrationForm(StyleForMixin,forms.ModelForm):
         return email
 
     #  Non-Field Errors
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     password = cleaned_data.get('password')
-    #     confirm_password = cleaned_data.get('confirm_password')
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
 
-    #     if password != confirm_password:
-    #         raise forms.ValidationError("Password do not match")
+        if password != confirm_password:
+            raise forms.ValidationError("Password do not match")
         
-    #     return cleaned_data
+        return cleaned_data
