@@ -20,8 +20,8 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),    
-    path('', include("tasks.urls")),
-    path('', include("users.urls")),
+    path('tasks/', include("tasks.urls")),
+    path('users/', include("users.urls")),
     path('', include("cors.urls"))
     
 ]+ debug_toolbar_urls()
