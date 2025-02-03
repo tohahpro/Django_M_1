@@ -62,3 +62,6 @@ def active_user(request, user_id, token):
             return HttpResponse('Invalid user or id')
     except User.DoesNotExist:
         return HttpResponse('User not found')
+
+def admin_dashboard(request):
+    return render(request, 'admin/dashboard.html')
