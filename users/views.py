@@ -5,7 +5,13 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from users.forms import LoginForm, AssignRoleForm, CreateGroupForm
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.decorators import login_required, user_passes_test
 # Create your views here.
+
+# Test for Users
+def is_admin(user):
+    return user.groups.filter(name='Admin').exists()
+
 def sign_up(request):
     if request.method == 'GET':
         # form = RegisterFrom()
@@ -22,16 +28,6 @@ def sign_up(request):
             return redirect('sign-in')
         else:
             print('Form is not valid')
-            # username = form.cleaned_data.get('username')
-            # # password = form.cleaned_data['password1']
-            # password = form.cleaned_data.get('password1')
-            # confirm_password = form.cleaned_data.get('password2')
-
-            # if password == confirm_password:
-            #     User.objects.create(username=username, password=password)
-            # else:
-            #     print('Password are not same')
-            # form.save()
 
     return render(request, 'registration/register.html',{'form':form})
 
@@ -45,6 +41,7 @@ def sign_in(request):
             return redirect('home')        
     return render(request, 'registration/login.html',{'form':form})
 
+@login_required
 def sign_out(request):
     if request.method == 'POST':
         logout(request)
@@ -62,10 +59,12 @@ def active_user(request, user_id, token):
     except User.DoesNotExist:
         return HttpResponse('User not found')
 
+@user_passes_test(is_admin)
 def admin_dashboard(request):
     users = User.objects.all()
     return render(request, 'admin/dashboard.html',{'users':users})
 
+@user_passes_test(is_admin)
 def assign_role(request, user_id):
     user = User.objects.get(id=user_id)
     form = AssignRoleForm()
@@ -79,7 +78,7 @@ def assign_role(request, user_id):
             return redirect('admin-dashboard')
     return render(request, 'admin/assign_role.html',{'form':form})
 
-
+@user_passes_test(is_admin)
 def create_group(request):
     form = CreateGroupForm()
     if request.method == 'POST':
@@ -90,6 +89,7 @@ def create_group(request):
             return redirect('create-group')
     return render(request, 'admin/create_group.html',{'form':form})
 
+@user_passes_test(is_admin)
 def group_list(request):
     groups = Group.objects.all()
     return render(request, 'admin/group_list.html',{'groups': groups})
