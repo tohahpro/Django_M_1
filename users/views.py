@@ -1,8 +1,7 @@
-from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth.forms import UserCreationForm  
-from django.contrib.auth.models import User
-from users.forms import RegisterFrom ,CustomRegistrationForm 
-from django.contrib.auth import login, authenticate, logout
+from django.shortcuts import render, redirect, HttpResponse  
+from django.contrib.auth.models import User, Group
+from users.forms import CustomRegistrationForm 
+from django.contrib.auth import login, logout
 from django.contrib import messages
 from users.forms import LoginForm, AssignRoleForm, CreateGroupForm
 from django.contrib.auth.tokens import default_token_generator
@@ -90,3 +89,7 @@ def create_group(request):
             messages.success(request, f'Group {group.name} has been created successfully.')
             return redirect('create-group')
     return render(request, 'admin/create_group.html',{'form':form})
+
+def group_list(request):
+    groups = Group.objects.all()
+    return render(request, 'admin/group_list.html',{'groups': groups})
