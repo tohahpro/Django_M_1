@@ -3,11 +3,18 @@ from django.http import HttpResponse
 from tasks.forms import TaskModelFrom, TaskDetailsModelForm
 from tasks.models import Employee, Task, TaskDetails, Projects
 from django.db.models import Q, Count, Max, Min, Avg
-from datetime import date
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 
 # Create your views here.
 
+def is_manager(user):
+    return user.groups.filter(name='Manager').exists()
+
+def is_employee(user):
+    return user.groups.filter(name='Employee').exists()
+
+user_passes_test(is_manager, login_url='no-permission')
 def manager_dashboard(request):   
 
     type = request.GET.get('type','all')
@@ -39,10 +46,12 @@ def manager_dashboard(request):
     }
     return render(request, "dashboard/manager_dashboard.html",context)
 
-def user_dashboard(request):
+user_passes_test(is_employee, login_url='no-permission')
+def employee_dashboard(request):
     return render(request, "dashboard/user_dashboard.html")
 
-
+@login_required
+@permission_required('tasks.add_task', login_url='no-permission')
 def create_task(request):
     # employees = Employee.objects.all()
     task_form = TaskModelFrom() # For GET
@@ -65,6 +74,8 @@ def create_task(request):
     context = {"task_form": task_form, "task_detail_form":task_detail_form}
     return render(request, "task_form.html", context)
 
+@login_required
+@permission_required('tasks.change_task', login_url='no-permission')
 def update_task(request,id):
     task = Task.objects.get(id=id)    
     task_form = TaskModelFrom(instance=task) # For GET
@@ -90,7 +101,8 @@ def update_task(request,id):
     context = {"task_form": task_form, "task_detail_form":task_detail_form}
     return render(request, "task_form.html", context)
 
-
+@login_required
+@permission_required('tasks.delete_task', login_url='no-permission')
 def delete_task(request,id):
     if request.method == 'POST':
         task = Task.objects.get(id=id)
