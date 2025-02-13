@@ -28,8 +28,8 @@
               {% for task in tasks %}
               <tr class="border-t">
                 <td class="px-4 py-2">
-                <div class=" flex justify-between">
-                  <div class="flex items-center gap-3 text-left">
+                <div class="flex justify-between">
+                  <div class="flex-1 flex items-center gap-3 text-left">
                     <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                     <a href='{% url "task-details" task.id %}' class="">{{task.title}}</a>
                   </div> 
@@ -57,8 +57,8 @@
                   <div class="flex -space-x-3">
                     {% for emp in task.assigned_to.all %}
                       <span
-                      class="p-1 text-sm font-medium bg-red-400 text-white rounded-full uppercase border-2 border-gray-300"
-                      >{{emp.name|slice:':2'}}</span>
+                      class="text-sm font-medium bg-red-400 text-white rounded-full w-9 h-9 flex items-center justify-center uppercase border border-gray-300"
+                      >{{emp.first_name|slice:':1'}}</span>
                     {% endfor %}
                   </div>
                 </td>
