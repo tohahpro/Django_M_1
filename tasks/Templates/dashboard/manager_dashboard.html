@@ -31,7 +31,7 @@
                 <div class=" flex justify-between">
                   <div class="flex items-center gap-3 text-left">
                     <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                    <span class="">{{task.title}}</span>
+                    <a href='{% url "task-details" task.id %}' class="">{{task.title}}</a>
                   </div> 
                 <div class="flex items-center gap-2">
                   <div>

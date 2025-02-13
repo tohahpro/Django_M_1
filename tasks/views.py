@@ -115,51 +115,11 @@ def delete_task(request,id):
 
 
 
-
-# for testing purpose
-def test(request):
-    context = {
-        "names" : ["toha", "Ahamd","john"]
-    }
-    return render(request, "Test.html",context)
-
-def view_task(request):
-    # Retrieving Data task model 
-    # tasks = Task.objects.all()
-    # return render(request, 'view_task.html',{"tasks": tasks})
-
-    # Retrieving a specific task
-    # task_3 = Task.objects.get(id=1)    
-    # return render(request, 'view_task.html',{"tasks": tasks, 'task_3': task_3})
-
-    # taskFilter = Task.objects.filter(status="PENDING")
-    # due_date_Filter = Task.objects.filter(due_date=date.today())
-
-    # """Show the task whos priority is not low"""
-    # priority_task = TaskDetails.objects.exclude(priority="L")
-
-    # return render(request, 'view_task.html',{"taskFilter": taskFilter, "due_date_Filter":due_date_Filter,"Task_priority":priority_task })
-
-    look_up = Task.objects.filter(title__icontains='b')
-
-    task_1 = Task.objects.filter(Q(status='PENDING') | Q(status='IN_PROGRESS'))
-
-    tasks = Task.objects.select_related('details').all()
-
-    """Prefetch Related (Reverse Foreignkey, manyToMany)"""
-    task_4 = Projects.objects.prefetch_related('task_set').all()
-
-    """Prefetch Related (manyToMany)"""
-    task_5 = Task.objects.prefetch_related("assigned_to").all()
-    
-    # return render(request, 'view_task.html', {"tasks": tasks,"tasks1": task_1, "task4":task_4,"task5":task_5,"look_up": look_up})
-
-    # Aggregations [Advanced]
-    # task_count = Task.objects.aggregate(num_task=Count('id'))
-    projects = Projects.objects.annotate(num_task=Count('task')).order_by('num_task')
-
-    return render(request, 'view_task.html', {"projects":projects})
-    
+@login_required
+@permission_required('tasks.view_task', login_url='no-permission')
+def task_details(request, task_id):
+    task = Task.objects.get(id = task_id)
+    return render(request, 'task_details.html', {'task': task}) 
    
 
     
