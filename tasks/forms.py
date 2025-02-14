@@ -78,7 +78,7 @@ class TaskModelFrom(StyleForMixin,forms.ModelForm):
 class TaskDetailsModelForm(StyleForMixin,forms.ModelForm):
     class Meta:
         model = TaskDetails
-        fields = ['priority','notes']
+        fields = ['priority','notes', 'asset']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -59,7 +59,7 @@ def create_task(request):
 
     if request.method == "POST":        
         task_form = TaskModelFrom(request.POST)
-        task_detail_form = TaskDetailsModelForm(request.POST)
+        task_detail_form = TaskDetailsModelForm(request.POST, request.FILES)
         if task_form.is_valid() and task_detail_form.is_valid():
 
             """For Model From Data"""            
