@@ -41,7 +41,8 @@ class TaskDetails(models.Model):
         (LOW, 'Low'),
     )
     task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='details')
-    asset = models.ImageField(upload_to="tasks_asset", blank=True, null=True)
+    asset = models.ImageField(upload_to="tasks_asset", blank=True, null=True, 
+                              default='tasks_asset/default_images.png')
     priority = models.CharField(max_length=1, choices= PRIORITY_OPTIONS, default=LOW)
     notes = models.TextField(blank=True, null=True)
 
