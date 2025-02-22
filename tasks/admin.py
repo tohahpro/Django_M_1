@@ -5,5 +5,4 @@ from tasks.models import Task, TaskDetails, Employee, Projects
 
 admin.site.register(Task)
 admin.site.register(TaskDetails)
-admin.site.register(Employee)
 admin.site.register(Projects)

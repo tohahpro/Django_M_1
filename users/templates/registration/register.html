@@ -1,21 +1,13 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static "css/output.css" %}">
-</head>
-<body>
-    <h1>welcome</h1>
+    {% extends "base.html" %}
+    {% block content %}
+    <h1 class='text-center mt-16 text-3xl font-bold'>Welcome</h1>
     {% comment %} {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
             {{error}}
         {% endfor %}
     {% endif %} {% endcomment %}
-    <section>
-        <form action="" method='POST'>
+    <section class='w-1/2 mx-auto my-20'>
+        <form class='space-y-2' action="" method='POST'>
             {% csrf_token %}
             {% for field in form %}
                 <p>
@@ -31,8 +23,7 @@
                     {% endif %}
                 </p>
             {% endfor %}
-            <button class="submit">Sign Up</button>
+            <button class="submit w-full bg-red-400 py-2 font-medium text-white rounded">Sign Up</button>
         </form>
     </section>
-</body>
-</html>
+    {% endblock content %}

@@ -5,6 +5,7 @@ from tasks.models import Employee, Task, TaskDetails, Projects
 from django.db.models import Q, Count, Max, Min, Avg
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
+from users.views import is_admin
 
 # Create your views here.
 
@@ -42,7 +43,8 @@ def manager_dashboard(request):
 
     context = {
         "tasks" : tasks,
-        "counts" : counts    
+        "counts" : counts,
+        "role" : 'manager' 
     }
     return render(request, "dashboard/manager_dashboard.html",context)
 
@@ -59,7 +61,7 @@ def create_task(request):
 
     if request.method == "POST":        
         task_form = TaskModelFrom(request.POST)
-        task_detail_form = TaskDetailsModelForm(request.POST)
+        task_detail_form = TaskDetailsModelForm(request.POST, request.FILES)
         if task_form.is_valid() and task_detail_form.is_valid():
 
             """For Model From Data"""            
@@ -115,51 +117,26 @@ def delete_task(request,id):
 
 
 
+@login_required
+@permission_required('tasks.view_task', login_url='no-permission')
+def task_details(request, task_id):
+    task = Task.objects.get(id = task_id)
+    status_choices = Task.STATUS_CHOICES
+    if request.method == 'POST':
+        selected_status = request.POST.get('task_status')
+        task.status = selected_status
+        task.save()
+        return redirect('task-details', task.id)
+    return render(request, 'task_details.html', {'task': task, 'status_choices': status_choices})
 
-# for testing purpose
-def test(request):
-    context = {
-        "names" : ["toha", "Ahamd","john"]
-    }
-    return render(request, "Test.html",context)
+@login_required
+def dashboard(request):
+    if is_manager(request.user):
+        return redirect('manager-dashboard')
+    elif is_employee(request.user):
+        return redirect('user-dashboard')
+    elif is_admin(request.user):
+        return redirect('admin-dashboard')
+    return redirect('no-permission')
 
-def view_task(request):
-    # Retrieving Data task model 
-    # tasks = Task.objects.all()
-    # return render(request, 'view_task.html',{"tasks": tasks})
 
-    # Retrieving a specific task
-    # task_3 = Task.objects.get(id=1)    
-    # return render(request, 'view_task.html',{"tasks": tasks, 'task_3': task_3})
-
-    # taskFilter = Task.objects.filter(status="PENDING")
-    # due_date_Filter = Task.objects.filter(due_date=date.today())
-
-    # """Show the task whos priority is not low"""
-    # priority_task = TaskDetails.objects.exclude(priority="L")
-
-    # return render(request, 'view_task.html',{"taskFilter": taskFilter, "due_date_Filter":due_date_Filter,"Task_priority":priority_task })
-
-    look_up = Task.objects.filter(title__icontains='b')
-
-    task_1 = Task.objects.filter(Q(status='PENDING') | Q(status='IN_PROGRESS'))
-
-    tasks = Task.objects.select_related('details').all()
-
-    """Prefetch Related (Reverse Foreignkey, manyToMany)"""
-    task_4 = Projects.objects.prefetch_related('task_set').all()
-
-    """Prefetch Related (manyToMany)"""
-    task_5 = Task.objects.prefetch_related("assigned_to").all()
-    
-    # return render(request, 'view_task.html', {"tasks": tasks,"tasks1": task_1, "task4":task_4,"task5":task_5,"look_up": look_up})
-
-    # Aggregations [Advanced]
-    # task_count = Task.objects.aggregate(num_task=Count('id'))
-    projects = Projects.objects.annotate(num_task=Count('task')).order_by('num_task')
-
-    return render(request, 'view_task.html', {"projects":projects})
-    
-   
-
-    

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # many to many 
 class Employee(models.Model):
     name = models.CharField(max_length=100)
@@ -18,13 +18,12 @@ class Task(models.Model):
         "Projects",
         on_delete=models.CASCADE, 
         default=1
-    )
-    assigned_to = models.ManyToManyField(Employee, related_name='tasks')    
+    )       
+    assigned_to = models.ManyToManyField(User, related_name='tasks')
     title = models.CharField(max_length=250)
     description = models.TextField()
     due_date = models.DateField()
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='PENDING')
-    is_completed = models.BooleanField(default=False)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     #details
@@ -42,7 +41,8 @@ class TaskDetails(models.Model):
         (LOW, 'Low'),
     )
     task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='details')
-    # assigned_to = models.CharField(max_length=100)
+    asset = models.ImageField(upload_to="tasks_asset", blank=True, null=True, 
+                              default='tasks_asset/default_images.png')
     priority = models.CharField(max_length=1, choices= PRIORITY_OPTIONS, default=LOW)
     notes = models.TextField(blank=True, null=True)
 
