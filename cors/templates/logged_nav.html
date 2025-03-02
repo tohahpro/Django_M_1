@@ -5,15 +5,13 @@
           >Taskify</a
         >
         <div class="hidden md:flex space-x-4">          
-            <a href="" class="text-gray-600 hover:text-gray-800">
+            <a href="{% url "dashboard" %}" class="text-gray-600 hover:text-gray-800">
             Dashboard</a>         
           
           <a href="#" class="text-gray-600 hover:text-gray-800">Tasks</a>
-          <a href="{% url 'group-list' %}" class="text-gray-600 hover:text-gray-800"
-            >Tasks</a
-          >
+          
           <a
-            href=""
+            href="{% url "create-task" %}"
             class="text-gray-600 hover:text-gray-800"
             >Create Task</a
           >
