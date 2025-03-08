@@ -9,6 +9,7 @@ from django.utils.decorators import method_decorator
 from users.views import is_admin
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic.base import ContextMixin
 
 # class base view Reusability 
 
@@ -92,17 +93,24 @@ def create_task(request):
 create_decorators = [login_required, permission_required('tasks.add_task', login_url='no-permission')]
 
 # @method_decorator(create_decorators, name="dispatch")
-class CreateTask(LoginRequiredMixin, PermissionRequiredMixin, View):
+class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
     """For creating task"""
     permission_required = 'tasks.add_task'
     login_url = 'no-permission'
     template_name = 'task_form.html'
 
-    def get(self, request, *args, **kwargs):
-        task_form = TaskModelFrom()
-        task_detail_form = TaskDetailsModelForm()
-        context = {"task_form": task_form, "task_detail_form":task_detail_form}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['task_from'] = kwargs.get('task_from', TaskModelFrom())
+        context['task_detail_from'] = kwargs.get('task-detail_from', TaskDetailsModelForm())
+        return context
+    
 
+    def get(self, request, *args, **kwargs):
+        # task_form = TaskModelFrom()
+        # task_detail_form = TaskDetailsModelForm()
+        # context = {"task_form": task_form, "task_detail_form":task_detail_form}
+        context = self.get_context_data()
         return render(request, self.template_name, context)
         
     def post(self, request, *args, **kwargs):
@@ -116,7 +124,8 @@ class CreateTask(LoginRequiredMixin, PermissionRequiredMixin, View):
             task_detail.save()
 
             messages.success(request,"Task Created Successfully!")
-            return redirect('create-task')
+            context = self.get_context_data(task_from=task_from, task_detail_from=task_detail_from)
+            return render(request, self.template_name, context)
 
 @login_required
 @permission_required('tasks.change_task', login_url='no-permission')
