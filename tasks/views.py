@@ -10,7 +10,7 @@ from users.views import is_admin
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic.base import ContextMixin
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 # class base view Reusability 
 
@@ -192,6 +192,26 @@ def task_details(request, task_id):
         task.save()
         return redirect('task-details', task.id)
     return render(request, 'task_details.html', {'task': task, 'status_choices': status_choices})
+
+
+class TaskDetail(DetailView):
+    model = Task
+    template_name = 'task_details.html'
+    context_object_name = 'task'
+    pk_url_kwarg = 'task_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_choices'] = Task.STATUS_CHOICES
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        selected_status = request.POST.get('task_status')
+        task.status = selected_status
+        task.save()
+        return redirect('task-details', task.id)
+    
 
 @login_required
 def dashboard(request):
