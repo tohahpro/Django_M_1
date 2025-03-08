@@ -10,6 +10,7 @@ from users.views import is_admin
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic.base import ContextMixin
+from django.views.generic import ListView
 
 # class base view Reusability 
 
@@ -124,7 +125,7 @@ class CreateTask(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View
             task_detail.save()
 
             messages.success(request,"Task Created Successfully!")
-            context = self.get_context_data(task_from=task_from, task_detail_from=task_detail_from)
+            context = self.get_context_data(task_from='task_from', task_detail_from='task_detail_from')
             return render(request, self.template_name, context)
 
 @login_required
@@ -167,6 +168,18 @@ def delete_task(request,id):
     return redirect('manager-dashboard')
 
 
+view_project_decorators = [login_required, permission_required('projects.view_project', login_url='no-permission')]
+
+@method_decorator(view_project_decorators, name='dispatch')
+class ViewProject(ListView):
+    model = Projects
+    context_object_name = 'projects'
+    template_name = 'view_task.html'
+
+    def get_queryset(self):
+        queryset = Projects.objects.annotate(
+            num_task = Count('task')).order_by('num_task')
+        return queryset
 
 @login_required
 @permission_required('tasks.view_task', login_url='no-permission')
