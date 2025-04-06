@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% comment %} {% load custom_filters %} {% endcomment %}
+{% load custom_filters %}
 {% block title %}Profile{% endblock title %}
 {% block content %}
   <div class="bg-gray-100">
@@ -64,7 +64,7 @@
                 <span class="font-medium">Member Since:</span> {{member_since|date:"F j, Y"}}
               </p>
               <p class="text-gray-600">
-                <span class="font-medium">Last Login:</span> {{last_login}}
+                <span class="font-medium">Last Login:</span> {{last_login|humanize_date}}
               </p> 
             </div>
           </div>
